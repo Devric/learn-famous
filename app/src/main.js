@@ -12,41 +12,38 @@ define(function(require, exports, module) {
 
     var mainContext = Engine.createContext()
 
-    createSurface();
-    createModifiedSurface();
+    var lsurface = new Surface({
+        size : [100, 100]
+        , content : 'left surface'
+        , properties : {
+            color : 'white'
+            , textAli : 'center'
+            , backgroundColor : '#FA5C4F'
+        }
+    })
+    var rsurface = new Surface({
+        size : [100, 100]
+        , content : 'right surface'
+        , properties : {
+            color : 'white'
+            , textAli : 'center'
+            , backgroundColor : '#FA5C4F'
+        }
+    })
 
-    function createSurface() {
-        var surface = new Surface({
-            size : [100, 100]
-          , content : 'surface'
-          , properties : {
-                color : 'white'
-              , textAli : 'center'
-              , backgroundColor : '#FA5C4F'
-            }
-        })
+    var downMod = new StateModifier({
+        transform: Transform.translate(0,100,0)
+    })
+    var rightMod = new StateModifier({
+        transform: Transform.translate(150,0,0)
+    })
 
-        mainContext.add(surface)
-    }
+    // this applies to all surface afterwards
+    var newPane = mainContext.add(downMod)
 
-    function createModifiedSurface() {
-        var modifiedSurface = new Surface({
-            size : [100, 100]
-          , content : 'modified'
-          , properties : {
-                color : 'white'
-              , textAli : 'center'
-              , backgroundColor : '#FA5C4F'
-            }
-        })
+    newPane.add(lsurface)
 
-        var stateModifier = new StateModifier({
-            transform: Transform.translate(150,100,0)
-        })
-
-        mainContext.add(stateModifier).add(modifiedSurface)
-    }
-
-    // WARNING translate order do matter, if you apply roate before or after translate, the result are different even if it is the same input
+    // lets branch off and add new modifier
+    newPane.add(rightMod).add(rsurface)
 
 });
