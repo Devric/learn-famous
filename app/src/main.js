@@ -13,6 +13,9 @@ define(function(require, exports, module) {
         content : 'hello world'
     })
 
+    // reset the content after init
+    firstSurface.setContent('<h1>Hey World</h1>')
+
     mainContext.add(firstSurface)
 
 });
