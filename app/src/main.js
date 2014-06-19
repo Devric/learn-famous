@@ -47,4 +47,6 @@ define(function(require, exports, module) {
         mainContext.add(stateModifier).add(modifiedSurface)
     }
 
+    // WARNING translate order do matter, if you apply roate before or after translate, the result are different even if it is the same input
+
 });
