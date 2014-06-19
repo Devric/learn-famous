@@ -12,16 +12,39 @@ define(function(require, exports, module) {
 
     var mainContext = Engine.createContext()
 
-    var stateModifier = new StateModifier({
-        transform: Transform.translate(150,100,0)
-    })
+    createSurface();
+    createModifiedSurface();
 
-    var firstSurface = new Surface({
-        size : [200, 200]
-      , properties : {
-          backgroundColor : '#FA5C4F'
-        }
-    })
+    function createSurface() {
+        var surface = new Surface({
+            size : [100, 100]
+          , content : 'surface'
+          , properties : {
+                color : 'white'
+              , textAli : 'center'
+              , backgroundColor : '#FA5C4F'
+            }
+        })
 
-    mainContext.add(stateModifier).add(firstSurface)
+        mainContext.add(surface)
+    }
+
+    function createModifiedSurface() {
+        var modifiedSurface = new Surface({
+            size : [100, 100]
+          , content : 'modified'
+          , properties : {
+                color : 'white'
+              , textAli : 'center'
+              , backgroundColor : '#FA5C4F'
+            }
+        })
+
+        var stateModifier = new StateModifier({
+            transform: Transform.translate(150,100,0)
+        })
+
+        mainContext.add(stateModifier).add(modifiedSurface)
+    }
+
 });
