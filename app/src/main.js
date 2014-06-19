@@ -8,42 +8,62 @@ define(function(require, exports, module) {
     var ImageSurface  = require('famous/surfaces/ImageSurface');
     var Surface       = require('famous/core/Surface')
     var StateModifier = require('famous/modifiers/StateModifier')
-    
+    var View          = require('famous/core/View')
+
+    var align = [0.5,0.5]
+    var origin = [0.5,0.5]
 
     var mainContext = Engine.createContext()
+    var view = new View()
 
-    var lsurface = new Surface({
-        size : [100, 100]
-        , content : 'left surface'
-        , properties : {
-            color : 'white'
-            , textAli : 'center'
-            , backgroundColor : '#FA5C4F'
+    view.add(new Surface({
+        properties : {
+            backgroundColor: '#fa5c4f'
         }
-    })
-    var rsurface = new Surface({
-        size : [100, 100]
-        , content : 'right surface'
-        , properties : {
-            color : 'white'
-            , textAli : 'center'
-            , backgroundColor : '#FA5C4F'
-        }
+    }))
+
+    var viewMod = new StateModifier({
+        size   : [200,200]
+      , origin : origin
+      , align  : align
     })
 
-    var downMod = new StateModifier({
-        transform: Transform.translate(0,100,0)
-    })
-    var rightMod = new StateModifier({
-        transform: Transform.translate(150,0,0)
-    })
+    var pos = [
+        [0,0]
+      , [0,1]
+      , [1,0]
+      , [1,1]
+    ]
 
-    // this applies to all surface afterwards
-    var newPane = mainContext.add(downMod)
+    // add the 4 coords in the square
+    var i=0, posLen=pos.length
+    for (; i < posLen; i++) {
+        var surface = new Surface({
+            size : [true,true]
+          , content : 'origin: ' + pos[i]
+        })
 
-    newPane.add(lsurface)
+        var mod = new StateModifier({
+            origin : pos[i]
+          , align  : pos[i]
+        })
 
-    // lets branch off and add new modifier
-    newPane.add(rightMod).add(rsurface)
+        view.add(mod).add(surface)
+    }
+    mainContext.add(viewMod).add(view)
 
+    var i=0, posLen=pos.length
+    for (; i < posLen; i++) {
+        var surface = new Surface({
+            size : [true,true]
+          , content : 'align: ' + pos[i]
+        })
+
+        var mod = new StateModifier({
+            origin : pos[i]
+          , align  : pos[i]
+        })
+
+        mainContext.add(mod).add(surface)
+    }
 });
