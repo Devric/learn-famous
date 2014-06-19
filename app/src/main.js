@@ -16,54 +16,22 @@ define(function(require, exports, module) {
     var mainContext = Engine.createContext()
     var view = new View()
 
-    view.add(new Surface({
-        properties : {
-            backgroundColor: '#fa5c4f'
+    var surface = new Surface({
+        size : [100,100]
+      , properties : {
+            color: 'white'
+          , backgroundColor: '#fa5c4f'
         }
-    }))
-
-    var viewMod = new StateModifier({
-        size   : [200,200]
-      , origin : origin
-      , align  : align
     })
 
-    var pos = [
-        [0,0]
-      , [0,1]
-      , [1,0]
-      , [1,1]
-    ]
+    // lets add this modifier
+    var mod = new StateModifier()
+    mainContext.add(mod).add(surface)
 
-    // add the 4 coords in the square
-    var i=0, posLen=pos.length
-    for (; i < posLen; i++) {
-        var surface = new Surface({
-            size : [true,true]
-          , content : 'origin: ' + pos[i]
-        })
+    // now we transition it
+    mod.setTransform(
+            Transform.translate(100,300,0),
+            {duration:1000,curve:'easeInOut'}
+    )
 
-        var mod = new StateModifier({
-            origin : pos[i]
-          , align  : pos[i]
-        })
-
-        view.add(mod).add(surface)
-    }
-    mainContext.add(viewMod).add(view)
-
-    var i=0, posLen=pos.length
-    for (; i < posLen; i++) {
-        var surface = new Surface({
-            size : [true,true]
-          , content : 'align: ' + pos[i]
-        })
-
-        var mod = new StateModifier({
-            origin : pos[i]
-          , align  : pos[i]
-        })
-
-        mainContext.add(mod).add(surface)
-    }
 });
