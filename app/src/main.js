@@ -10,11 +10,16 @@ define(function(require, exports, module) {
 
     var mainContext = Engine.createContext()
     var firstSurface = new Surface({
-        content : 'hello world'
+        size : [200, 400]
+      , content : 'hello world'
+      , properties : {
+            color           : 'white'
+          , textAlign       : 'center'
+          , backgroundColor : '#FA5C4F'
+          , borderRadius    : '15px'
+          , fontSize        : '40px'
+      }
     })
-
-    // reset the content after init
-    firstSurface.setContent('<h1>Hey World</h1>')
 
     mainContext.add(firstSurface)
 
