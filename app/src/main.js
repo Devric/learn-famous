@@ -29,10 +29,8 @@ define(function(require, exports, module) {
 
     mainContext.add(surface)
 
-    surface.on('click', function(){
-        surface.setProperties({
-            backgroundColor:'#878785'
-        })
+    Engine.on('keydown', function(e){
+        surface.setContent(e.which)
     })
 
 });
