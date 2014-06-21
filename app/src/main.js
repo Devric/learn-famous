@@ -35,6 +35,7 @@ define(function(require, exports, module) {
             {duration:1000,curve:'easeInOut'}
     )
 
+    // transform on the same modier will not work, requires a callback
     mod.setTransform(
         Transform.translate(100, 300, 0),
         { duration : 800, curve: Easing.outElastic },
