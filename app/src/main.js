@@ -16,30 +16,40 @@ define(function(require, exports, module) {
     
 
     var mainContext = Engine.createContext()
-    var view = new View()
 
     var surface = new Surface({
-        size : [100,100]
+        size : [undefined,100]
+      , content : 'click me'
       , properties : {
             color: 'white'
+          , textAlign: 'center'
           , backgroundColor: '#fa5c4f'
         }
     })
 
-    // lets add this modifier
-    var mod = new StateModifier({
-        origin: [0.5,0]
+    mainContext.add(surface)
+
+    surface.on('click', function(){
+        surface.setProperties({
+            backgroundColor:'#878785'
+        })
     })
-    mainContext.add(mod).add(surface)
 
-    var spring = {
-        method: 'spring',
-        period: 1000,
-        dampingRatio: 0.3
-    }
-
-    mod.setTransform(
-        Transform.translate(0,400,0), spring
-    )
 });
+
+// EVENTS
+//
+// click
+// mousedown
+// mousemove
+// mouseup
+// mouseover
+// mouseout
+// touchstart
+// touchmove
+// touchend
+// touchcancel
+// keydown
+// keyup
+// keypress
 
