@@ -9,6 +9,7 @@ define(function(require, exports, module) {
     var Surface       = require('famous/core/Surface')
     var StateModifier = require('famous/modifiers/StateModifier')
     var View          = require('famous/core/View')
+    var Easing        = require('famous/transitions/Easing')
 
     var align = [0.5,0.5]
     var origin = [0.5,0.5]
@@ -33,5 +34,13 @@ define(function(require, exports, module) {
             Transform.translate(100,300,0),
             {duration:1000,curve:'easeInOut'}
     )
+
+    mod.setTransform(
+        Transform.translate(100, 300, 0),
+        { duration : 800, curve: Easing.outElastic },
+        function() {
+            surface.setContent('finished');
+        }
+    );
 
 });
