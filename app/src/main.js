@@ -11,9 +11,6 @@ define(function(require, exports, module) {
     var View          = require('famous/core/View')
     var Easing        = require('famous/transitions/Easing')
 
-    var align = [0.5,0.5]
-    var origin = [0.5,0.5]
-
     var mainContext = Engine.createContext()
     var view = new View()
 
@@ -26,22 +23,27 @@ define(function(require, exports, module) {
     })
 
     // lets add this modifier
-    var mod = new StateModifier()
+    var mod = new StateModifier({
+        origin: [0.5,0]
+    })
     mainContext.add(mod).add(surface)
 
     // now we transition it
     mod.setTransform(
-            Transform.translate(100,300,0),
-            {duration:1000,curve:'easeInOut'}
+            Transform.translate(0,300,0),
+            {duration:8000,curve:'linear'}
     )
 
-    // transform on the same modier will not work, requires a callback
-    mod.setTransform(
-        Transform.translate(100, 300, 0),
-        { duration : 800, curve: Easing.outElastic },
-        function() {
-            surface.setContent('finished');
-        }
-    );
+    surface.on('click', function(){
+        // halting on the first animation
+        mod.halt()
+        surface.setContent('halted')
+
+        // but this new animation will carry out immediately
+        mod.setTransform(
+            Transform.translate(0,400,0),
+            {duration:400,curve:Easing.outBounce}
+        )
+    })
 
 });
