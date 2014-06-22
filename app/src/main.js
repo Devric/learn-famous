@@ -12,7 +12,6 @@ define(function(require, exports, module) {
     var Easing           = require('famous/transitions/Easing')
     var SpringTransition = require('famous/transitions/SpringTransition')
     var EventHandler     = require('famous/core/EventHandler')
-    var eventHandler = new EventHandler()
     
     var Transitionable   = require('famous/transitions/Transitionable')
     Transitionable.registerMethod('spring', SpringTransition)
@@ -31,8 +30,13 @@ define(function(require, exports, module) {
 
     mainContext.add(surface)
 
+    var eventHandler = new EventHandler()
+    var eventHandlerTwo = new EventHandler()
+
+    eventHandlerTwo.subscribe(eventHandler)
+
     // listen hi
-    eventHandler.on('hi', function(){
+    eventHandlerTwo.on('hi', function(){
         surface.setContent('reset')
     })
 
