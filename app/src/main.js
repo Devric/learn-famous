@@ -11,9 +11,11 @@ define(function(require, exports, module) {
     var View             = require('famous/core/View')
     var Easing           = require('famous/transitions/Easing')
     var SpringTransition = require('famous/transitions/SpringTransition')
+    var EventHandler     = require('famous/core/EventHandler')
+    var eventHandler = new EventHandler()
+    
     var Transitionable   = require('famous/transitions/Transitionable')
     Transitionable.registerMethod('spring', SpringTransition)
-    
 
     var mainContext = Engine.createContext()
 
@@ -29,25 +31,15 @@ define(function(require, exports, module) {
 
     mainContext.add(surface)
 
-    Engine.on('keydown', function(e){
-        surface.setContent(e.which)
+    // listen hi
+    eventHandler.on('hi', function(){
+        surface.setContent('reset')
+    })
+
+    // trigger hi
+    surface.on('click', function(){
+        eventHandler.emit('hi')
     })
 
 });
-
-// EVENTS
-//
-// click
-// mousedown
-// mousemove
-// mouseup
-// mouseover
-// mouseout
-// touchstart
-// touchmove
-// touchend
-// touchcancel
-// keydown
-// keyup
-// keypress
 
