@@ -17,6 +17,7 @@ define(function(require, exports, module) {
     Transitionable.registerMethod('spring', SpringTransition)
 
     var mainContext = Engine.createContext()
+    var myView = new View()
 
     var surface = new Surface({
         size : [undefined,100]
@@ -28,26 +29,19 @@ define(function(require, exports, module) {
         }
     })
 
-    mainContext.add(surface)
+    mainContext.add(myView)
+    myView.add(surface)
 
-    var eventHandler = new EventHandler()
-    var eventHandlerTwo = new EventHandler()
+    surface.pipe(myView)
+    // or myView.subscribe(surface)
 
-    // !!! using pipe instead of subscribe
-    //
-    // pipe =>      eventA PIPE      to eventB
-    // subcribe =>  eventB SUBSCRIBE to eventA
-    // eventHandlerTwo.subscribe(eventHandler)
-    eventHandler.pipe(eventHandlerTwo)
 
-    // listen hi
-    eventHandlerTwo.on('hi', function(){
-        surface.setContent('reset')
-    })
-
-    // trigger hi
-    surface.on('click', function(){
-        eventHandler.emit('hi')
+    // when pipe into a view or subscribe from a view
+    // is actullay linking into the input event handler
+    // _eventInput
+    // look in timbre menu tutorial
+    myView._eventInput.on('click', function() {
+        surface.setContent('hello')
     })
 
 });
