@@ -33,7 +33,12 @@ define(function(require, exports, module) {
     var eventHandler = new EventHandler()
     var eventHandlerTwo = new EventHandler()
 
-    eventHandlerTwo.subscribe(eventHandler)
+    // !!! using pipe instead of subscribe
+    //
+    // pipe =>      eventA PIPE      to eventB
+    // subcribe =>  eventB SUBSCRIBE to eventA
+    // eventHandlerTwo.subscribe(eventHandler)
+    eventHandler.pipe(eventHandlerTwo)
 
     // listen hi
     eventHandlerTwo.on('hi', function(){
