@@ -11,7 +11,7 @@ define(function(require,exports, module){
         View.apply(this, arguments)
 
         this.rootModifier = new StateModifier({
-            size: [400,500]
+            size: this.options.size
         })
 
         this.mainNode = this.add(this.rootModifier)
@@ -23,11 +23,13 @@ define(function(require,exports, module){
     SlideView.prototype = Object.create(View.prototype)
     SlideView.prototype.constructor = SlideView
 
-    SlideView.DEFAULT_OPTIONS = {}
+    SlideView.DEFAULT_OPTIONS = {
+        size: [400,500]
+    }
     module.exports = SlideView
 
-
     /** PRIVATE FUNC **/
+
     function _createBackground() {
         var bg = new Surface({
             properties: {
