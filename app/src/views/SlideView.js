@@ -17,6 +17,7 @@ define(function(require,exports, module){
         this.mainNode = this.add(this.rootModifier)
 
         _createBackground.call(this)
+        _createFilm.call(this)
 
     }
 
@@ -24,7 +25,8 @@ define(function(require,exports, module){
     SlideView.prototype.constructor = SlideView
 
     SlideView.DEFAULT_OPTIONS = {
-        size: [400,500]
+        size       : [400,500]
+      , filmBorder : 15
     }
     module.exports = SlideView
 
@@ -38,6 +40,26 @@ define(function(require,exports, module){
             }
         })
         this.mainNode.add(bg)
+    }
+
+    function _createFilm() {
+        this.options.filmSize = this.options.size[0] - 2 * this.options.filmBorder
+
+        var film = new Surface({
+            size: [this.options.filmSize, this.options.filmSize]
+          , properties : {
+                backgroundColor : '#222'
+              , zIndex : 1
+            }
+        })
+
+        var filmMod = new StateModifier({
+            origin: [0.5,0]
+          , align: [0.5,0]
+          , transform: Transform.translate(0,this.options.filmBorder,1)
+        })
+
+        this.mainNode.add(filmMod).add(film)
     }
 
 
