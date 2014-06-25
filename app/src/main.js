@@ -12,12 +12,20 @@ define(function(require, exports, module) {
     var Easing           = require('famous/transitions/Easing')
     var SpringTransition = require('famous/transitions/SpringTransition')
     var EventHandler     = require('famous/core/EventHandler')
+    var Utility          = require('famous/utilities/Utility')
+
+    var SlideData = require('data/SlideData')
     
-    var Transitionable   = require('famous/transitions/Transitionable')
-    Transitionable.registerMethod('spring', SpringTransition)
+    Utility.loadURL(SlideData.getUrl(), initApp)
 
     var AppView = require('views/AppView')
-    
+
+    function initApp(data) {
+        data = SlideData.parse(data)
+
+        var appView = new AppView({data:data})
+        mainContext.add(appView)
+    }
 
     var mainContext = Engine.createContext()
 

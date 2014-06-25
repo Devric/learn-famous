@@ -13,7 +13,9 @@ define(function(require,exports,module){
     function AppView() {
         View.apply(this, arguments)
 
-        var slideshowView = new SlideshowView()
+        var slideshowView = new SlideshowView({
+            data: this.options.data
+        })
         this.add(slideshowView)
     }
 
