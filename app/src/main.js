@@ -16,33 +16,13 @@ define(function(require, exports, module) {
     var Transitionable   = require('famous/transitions/Transitionable')
     Transitionable.registerMethod('spring', SpringTransition)
 
+    var AppView = require('views/AppView')
+    
+
     var mainContext = Engine.createContext()
-    var myView = new View()
 
-    var surface = new Surface({
-        size : [undefined,100]
-      , content : 'click me'
-      , properties : {
-            color: 'white'
-          , textAlign: 'center'
-          , backgroundColor: '#fa5c4f'
-        }
-    })
-
-    mainContext.add(myView)
-    myView.add(surface)
-
-    surface.pipe(myView)
-    // or myView.subscribe(surface)
-
-
-    // when pipe into a view or subscribe from a view
-    // is actullay linking into the input event handler
-    // _eventInput
-    // look in timbre menu tutorial
-    myView._eventInput.on('click', function() {
-        surface.setContent('hello')
-    })
+    var appView = new AppView()
+    mainContext.add(appView)
 
 });
 
