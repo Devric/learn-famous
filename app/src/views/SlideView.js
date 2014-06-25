@@ -16,14 +16,7 @@ define(function(require,exports, module){
 
         this.mainNode = this.add(this.rootModifier)
 
-        var bg = new Surface({
-            properties: {
-                backgroundColor: '#fffff5'
-              , boxShadow : '0 10px 20px -5px rgba(0,0,0,0.5)'
-            }
-        })
-
-        this.mainNode.add(bg)
+        _createBackground.call(this)
 
     }
 
@@ -32,5 +25,18 @@ define(function(require,exports, module){
 
     SlideView.DEFAULT_OPTIONS = {}
     module.exports = SlideView
+
+
+    /** PRIVATE FUNC **/
+    function _createBackground() {
+        var bg = new Surface({
+            properties: {
+                backgroundColor: '#fffff5'
+            , boxShadow : '0 10px 20px -5px rgba(0,0,0,0.5)'
+            }
+        })
+        this.mainNode.add(bg)
+    }
+
 
 })
