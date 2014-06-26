@@ -13,12 +13,11 @@ define(function(require, exports, module) {
     var SpringTransition = require('famous/transitions/SpringTransition')
     var EventHandler     = require('famous/core/EventHandler')
     var Utility          = require('famous/utilities/Utility')
-
-    var SlideData = require('data/SlideData')
+    var mainContext      = Engine.createContext()
+    var SlideData        = require('data/SlideData')
+    var AppView          = require('views/AppView')
     
     Utility.loadURL(SlideData.getUrl(), initApp)
-
-    var AppView = require('views/AppView')
 
     function initApp(data) {
         data = SlideData.parse(data)
@@ -26,11 +25,5 @@ define(function(require, exports, module) {
         var appView = new AppView({data:data})
         mainContext.add(appView)
     }
-
-    var mainContext = Engine.createContext()
-
-    var appView = new AppView()
-    mainContext.add(appView)
-
 });
 

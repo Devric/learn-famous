@@ -27,6 +27,36 @@ define(function(require,exports, module){
 
         this.mainNode = this.add(slideView)
         _createLightbox.call(this)
+        _createSlides.call(this)
+    }
+
+    SlideshowView.prototype.show = function() {
+        var slide = this.slides[this.currentIndex]
+        this.lightbox.show(slide)
+    }
+
+    SlideshowView.prototype.showNextSlide = function() {
+        this.currentIndex++
+        if (this.currentIndex === this.slides.length) this.currentIndex = 0
+        this.showCurrentSlide()
+    }
+
+    function _createSlides() {
+        this.slides = []
+        this.currentIndex = 0
+
+        var i=0, dataLen = this.options.data.length
+        for (; i < dataLen; i++) {
+            var slide = new SlideView({
+                size: this.options.size
+              , photoUrl : this.options.data[i]
+            })
+            this.slides.push(slide)
+
+            this.on('click', this.showNextSlide.bind(this))
+        }
+
+        this.showCurrentSlide()
     }
 
     SlideshowView.prototype = Object.create(View.prototype)
@@ -34,7 +64,7 @@ define(function(require,exports, module){
 
     SlideshowView.DEFAULT_OPTIONS = {
         size         : [450,500]
-      , data : undefined
+      , data         : undefined
       , lightboxOpts : {}
     }
 

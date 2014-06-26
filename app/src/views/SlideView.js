@@ -9,9 +9,7 @@ define(function(require,exports, module){
     var Transform = require('famous/core/Transform')
     var StateModifier = require('famous/modifiers/StateModifier')
     
-    // var SlideData = require('SlideData')
-    SlideData = {}
-    SlideData.defaultImage = 'a.jpg'
+    var SlideData = require('data/SlideData')
     
     function SlideView() {
         View.apply(this, arguments)
@@ -50,6 +48,11 @@ define(function(require,exports, module){
             }
         })
         this.mainNode.add(bg)
+
+        bg.on('click', function() {
+            // the event output handler is used to broadcast outwards
+            this._eventOutput.emit('click')
+        }.bind(this))
     }
 
     function _createFilm() {
@@ -60,6 +63,7 @@ define(function(require,exports, module){
           , properties : {
                 backgroundColor : '#222'
               , zIndex : 1
+              , pointerEvents : 'none' //make sure this is not clickable
             }
         })
 
@@ -79,6 +83,7 @@ define(function(require,exports, module){
           , content : 'this.options.photoUrl'
           , properties: {
                 zIndex: 2
+              , pointerEvents : 'none' //make sure this is not clickable
             }
         })
 
@@ -90,5 +95,6 @@ define(function(require,exports, module){
 
         this.mainNode.add(this.photoMod).add(photo)
     }
+
 
 })

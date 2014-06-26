@@ -22,7 +22,9 @@ define(function(require,exports,module){
     AppView.prototype = Object.create(View.prototype)
     AppView.prototype.constructor = AppView
 
-    AppView.DEFAULT_OPTIONS = {}
+    AppView.DEFAULT_OPTIONS = {
+        data:undefined
+    }
 
     module.exports = AppView
     
