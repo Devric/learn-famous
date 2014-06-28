@@ -22,77 +22,28 @@ define(function(require, exports, module) {
 
     var layout
 
-    createLayout()
-    addHeader()
-    addContent()
-    addFooter()
+    var grid = new GridLayout({
+        dimensions: [4,2]
+    })
 
-    function createLayout() {
-        layout = new HeaderFooterLayout({
-            headerSize:100
-          , footerSize: 50
-        })
+    var surfaces = []
+    grid.sequenceFrom(surfaces)
 
-        mainContext.add(layout)
-    }
-
-    function addHeader() {
-        layout.header.add(new Surface({
-            content: "header"
-          , classes: ["grey-bg"]
+    var i=0, eightLen=8
+    for (; i < eightLen; i++) {
+        surfaces.push(new Surface({
+            content: "panel " + (i+1)
+          , size : [undefined, undefined]
           , properties : {
-                lineHeight: "100px"
-              , textAlign : "center"
-          }
-        }))
-        mainContext.add(layout)
-    }
-
-    function addContent() {
-        layout.content.add(createGrid('content', [2,1]))
-    }
-
-    function addFooter() {
-        layout.footer.add(new Surface({
-            content: 'Footer'
-          , classes: ["grey-bg"]
-          , properties : {
-                lineHeight: "50px"
-              , textAlign : "center"
+                backgroundColor: "hsl(" + (i * 360 / 8) + ", 100%,50%)"
+              , color: '#404040'
+              , lineHeight: '200px'
+              , textAlign : 'center'
             }
         }))
-    }
+    }       
 
-    function createGrid(section, dimensions) {
-        var grid = new GridLayout({
-            dimensions: dimensions
-        })
+    mainContext.add(grid)
 
-        var views = []
-
-        grid.sequenceFrom(views)
-
-        var i=0, EightLen=8
-        for (; i < EightLen; i++) {
-            var view = new View()
-            var centerMod = new Modifier({
-                origin: [0.5,0.5]
-            })
-            var surface = new Surface({
-                content: section + ' ' + (i+1)
-              , size : [100,100]
-              , classes: ['red-bg']
-              , properties : {
-                    color: 'white'
-                  , textAlign : 'center'
-                  , lineHeight: '100px'
-                }
-            })
-
-            view.add(centerMod).add(surface)
-            views.push(view)
-        }
-        return grid
-    }
 });
 
