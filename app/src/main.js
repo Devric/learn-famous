@@ -22,8 +22,6 @@ define(function(require, exports, module) {
 
     var layout
 
-    // 3 section grid layout
-
     createLayout()
     addHeader()
     addContent()
@@ -31,8 +29,8 @@ define(function(require, exports, module) {
 
     function createLayout() {
         layout = new HeaderFooterLayout({
-            headerSize: 100
-          , footerSize : 50
+            headerSize:100
+          , footerSize: 50
         })
 
         mainContext.add(layout)
@@ -44,40 +42,52 @@ define(function(require, exports, module) {
           , classes: ["grey-bg"]
           , properties : {
                 lineHeight: "100px"
-              , textAlign: "center"
+              , textAlign : "center"
           }
         }))
+        mainContext.add(layout)
     }
 
     function addContent() {
-        layout.content.add(createGrid('content', [2,1]))
+        var grid = new GridLayout({
+            dimensions: [2,1]
+        })
+
+        var views = []
+        grid.sequenceFrom(views)
+
+        var i=0, Len=2
+        for (; i < Len; i++) {
+            var view = new View()
+            var centerMod = new Modifier({
+                origin: [0.5,0.5]
+            })
+
+            var surface = new Surface({
+                content : 'content ' + (i+1)
+              , size :[100,100]
+              , classes : ['red-bg']
+              , properties : {
+                    color: 'white'
+                  , textAlign : 'center'
+                  , lineHeight : '100px'
+                }
+            })
+            view.add(centerMod).add(surface)
+            views.push(view)
+        }   
+        layout.content.add(grid)
     }
 
     function addFooter() {
-        layout.footer.add(createGrid('footer', [3,1]))
-    }
-
-    function createGrid(section, dimensions) {
-        var grid = new GridLayout({
-            dimensions: dimensions
-        })
-
-        var surfaces = []
-        grid.sequenceFrom(surfaces)
-
-        var i=0
-        for (; i < dimensions[0]; i++) {
-            surfaces.push(new Surface({
-                content: section + ' ' + (i+1)
-              , size : [undefined, undefined]
-              , properties: {
-                    backgroundColor: "hsl(" + (i*360/8) + ",100%,50%)"
-                  , color: "#404040"
-                  , textAlign: 'center'
-              }
-            }))
-        }
-        return grid
+        layout.footer.add(new Surface({
+            content: 'Footer'
+          , classes: ["grey-bg"]
+          , properties : {
+                lineHeight: "50px"
+              , textAlign : "center"
+            }
+        }))
     }
 
 });
