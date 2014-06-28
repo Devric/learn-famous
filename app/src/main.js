@@ -22,28 +22,63 @@ define(function(require, exports, module) {
 
     var layout
 
-    var grid = new GridLayout({
-        dimensions: [4,2]
-    })
+    // 3 section grid layout
 
-    var surfaces = []
-    grid.sequenceFrom(surfaces)
+    createLayout()
+    addHeader()
+    addContent()
+    addFooter()
 
-    var i=0, eightLen=8
-    for (; i < eightLen; i++) {
-        surfaces.push(new Surface({
-            content: "panel " + (i+1)
-          , size : [undefined, undefined]
+    function createLayout() {
+        layout = new HeaderFooterLayout({
+            headerSize: 100
+          , footerSize : 50
+        })
+
+        mainContext.add(layout)
+    }
+
+    function addHeader() {
+        layout.header.add(new Surface({
+            content: "header"
+          , classes: ["grey-bg"]
           , properties : {
-                backgroundColor: "hsl(" + (i * 360 / 8) + ", 100%,50%)"
-              , color: '#404040'
-              , lineHeight: '200px'
-              , textAlign : 'center'
-            }
+                lineHeight: "100px"
+              , textAlign: "center"
+          }
         }))
-    }       
+    }
 
-    mainContext.add(grid)
+    function addContent() {
+        layout.content.add(createGrid('content', [2,1]))
+    }
+
+    function addFooter() {
+        layout.footer.add(createGrid('footer', [3,1]))
+    }
+
+    function createGrid(section, dimensions) {
+        var grid = new GridLayout({
+            dimensions: dimensions
+        })
+
+        var surfaces = []
+        grid.sequenceFrom(surfaces)
+
+        var i=0
+        for (; i < dimensions[0]; i++) {
+            surfaces.push(new Surface({
+                content: section + ' ' + (i+1)
+              , size : [undefined, undefined]
+              , properties: {
+                    backgroundColor: "hsl(" + (i*360/8) + ",100%,50%)"
+                  , color: "#404040"
+                  , textAlign: 'center'
+              }
+            }))
+        }
+        return grid
+    }
 
 });
 
