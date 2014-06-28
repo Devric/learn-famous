@@ -6,3 +6,11 @@ html {
   -webkit-backface-visibility: visible;
   backface-visibility: visible;
 }
+
+.red-bg {
+    background: red
+}
+
+.grey-bg {
+    background: #444
+}

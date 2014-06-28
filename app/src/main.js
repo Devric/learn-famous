@@ -12,37 +12,87 @@ define(function(require, exports, module) {
     var Easing           = require('famous/transitions/Easing')
     var SpringTransition = require('famous/transitions/SpringTransition')
     var EventHandler     = require('famous/core/EventHandler')
+    var HeaderFooterLayout = require('famous/views/HeaderFooterLayout')
+    var GridLayout = require('famous/views/GridLayout')
     
     var Transitionable   = require('famous/transitions/Transitionable')
     Transitionable.registerMethod('spring', SpringTransition)
 
     var mainContext = Engine.createContext()
-    var myView = new View()
 
-    var surface = new Surface({
-        size : [undefined,100]
-      , content : 'click me'
-      , properties : {
-            color: 'white'
-          , textAlign: 'center'
-          , backgroundColor: '#fa5c4f'
+    var layout
+
+    createLayout()
+    addHeader()
+    addContent()
+    addFooter()
+
+    function createLayout() {
+        layout = new HeaderFooterLayout({
+            headerSize:100
+          , footerSize: 50
+        })
+
+        mainContext.add(layout)
+    }
+
+    function addHeader() {
+        layout.header.add(new Surface({
+            content: "header"
+          , classes: ["grey-bg"]
+          , properties : {
+                lineHeight: "100px"
+              , textAlign : "center"
+          }
+        }))
+        mainContext.add(layout)
+    }
+
+    function addContent() {
+        layout.content.add(createGrid('content', [2,1]))
+    }
+
+    function addFooter() {
+        layout.footer.add(new Surface({
+            content: 'Footer'
+          , classes: ["grey-bg"]
+          , properties : {
+                lineHeight: "50px"
+              , textAlign : "center"
+            }
+        }))
+    }
+
+    function createGrid(section, dimensions) {
+        var grid = new GridLayout({
+            dimensions: dimensions
+        })
+
+        var views = []
+
+        grid.sequenceFrom(views)
+
+        var i=0, EightLen=8
+        for (; i < EightLen; i++) {
+            var view = new View()
+            var centerMod = new Modifier({
+                origin: [0.5,0.5]
+            })
+            var surface = new Surface({
+                content: section + ' ' + (i+1)
+              , size : [100,100]
+              , classes: ['red-bg']
+              , properties : {
+                    color: 'white'
+                  , textAlign : 'center'
+                  , lineHeight: '100px'
+                }
+            })
+
+            view.add(centerMod).add(surface)
+            views.push(view)
         }
-    })
-
-    mainContext.add(myView)
-    myView.add(surface)
-
-    surface.pipe(myView)
-    // or myView.subscribe(surface)
-
-
-    // when pipe into a view or subscribe from a view
-    // is actullay linking into the input event handler
-    // _eventInput
-    // look in timbre menu tutorial
-    myView._eventInput.on('click', function() {
-        surface.setContent('hello')
-    })
-
+        return grid
+    }
 });
 
