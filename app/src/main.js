@@ -14,81 +14,38 @@ define(function(require, exports, module) {
     var EventHandler     = require('famous/core/EventHandler')
     var HeaderFooterLayout = require('famous/views/HeaderFooterLayout')
     var GridLayout = require('famous/views/GridLayout')
-    
     var Transitionable   = require('famous/transitions/Transitionable')
     Transitionable.registerMethod('spring', SpringTransition)
+    var MouseSync = require('famous/inputs/MouseSync')
+
+    var position = [0,0]
+
+    var sync = new MouseSync()
+
+    var surface = new Surface({
+        size : [200,200]
+      , properties : {background:'red'}
+    })
+    
+    surface.pipe(sync)
+    sync.on('update', function(data) {
+        position[0] += data.delta[0]
+        position[1] += data.delta[1]
+    })
+
+    var positionMod = new Modifier({
+        transform:  function() {
+            return Transform.translate(position[0], position[1], 0)
+        }
+    })
+
+    var centerMod = new Modifier({origin:[0.5,0.5]})
 
     var mainContext = Engine.createContext()
 
-    var layout
-
-    createLayout()
-    addHeader()
-    addContent()
-    addFooter()
-
-    function createLayout() {
-        layout = new HeaderFooterLayout({
-            headerSize:100
-          , footerSize: 50
-        })
-
-        mainContext.add(layout)
-    }
-
-    function addHeader() {
-        layout.header.add(new Surface({
-            content: "header"
-          , classes: ["grey-bg"]
-          , properties : {
-                lineHeight: "100px"
-              , textAlign : "center"
-          }
-        }))
-        mainContext.add(layout)
-    }
-
-    function addContent() {
-        var grid = new GridLayout({
-            dimensions: [2,1]
-        })
-
-        var views = []
-        grid.sequenceFrom(views)
-
-        var i=0, Len=2
-        for (; i < Len; i++) {
-            var view = new View()
-            var centerMod = new Modifier({
-                origin: [0.5,0.5]
-            })
-
-            var surface = new Surface({
-                content : 'content ' + (i+1)
-              , size :[100,100]
-              , classes : ['red-bg']
-              , properties : {
-                    color: 'white'
-                  , textAlign : 'center'
-                  , lineHeight : '100px'
-                }
-            })
-            view.add(centerMod).add(surface)
-            views.push(view)
-        }   
-        layout.content.add(grid)
-    }
-
-    function addFooter() {
-        layout.footer.add(new Surface({
-            content: 'Footer'
-          , classes: ["grey-bg"]
-          , properties : {
-                lineHeight: "50px"
-              , textAlign : "center"
-            }
-        }))
-    }
+    mainContext.add(centerMod)
+               .add(positionMod)
+               .add(surface)
 
 });
 
