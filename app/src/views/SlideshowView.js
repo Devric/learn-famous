@@ -7,6 +7,8 @@ define(function(require,exports, module){
     var Transform = require('famous/core/Transform')
     var StateModifier = require('famous/modifiers/StateModifier')
     var Lightbox = require('famous/views/Lightbox')
+    var Easing = require('famous/transitions/Easing')
+    
 
     var SlideView = require('views/SlideView')
 
@@ -30,16 +32,6 @@ define(function(require,exports, module){
         _createSlides.call(this)
     }
 
-    SlideshowView.prototype.show = function() {
-        var slide = this.slides[this.currentIndex]
-        this.lightbox.show(slide)
-    }
-
-    SlideshowView.prototype.showNextSlide = function() {
-        this.currentIndex++
-        if (this.currentIndex === this.slides.length) this.currentIndex = 0
-        this.showCurrentSlide()
-    }
 
     function _createSlides() {
         this.slides = []
@@ -53,7 +45,7 @@ define(function(require,exports, module){
             })
             this.slides.push(slide)
 
-            this.on('click', this.showNextSlide.bind(this))
+            slide.on('click', this.showNextSlide.bind(this));
         }
 
         this.showCurrentSlide()
@@ -61,11 +53,30 @@ define(function(require,exports, module){
 
     SlideshowView.prototype = Object.create(View.prototype)
     SlideshowView.prototype.constructor = SlideshowView
+    SlideshowView.prototype.showCurrentSlide = function() {
+        var slide = this.slides[this.currentIndex]
+        this.lightbox.show(slide)
+    }
+    SlideshowView.prototype.show = function() {
+        var slide = this.slides[this.currentIndex]
+        this.lightbox.show(slide)
+    }
+
+    SlideshowView.prototype.showNextSlide = function() {
+        this.currentIndex++
+        if (this.currentIndex === this.slides.length) this.currentIndex = 0
+        this.showCurrentSlide()
+    }
 
     SlideshowView.DEFAULT_OPTIONS = {
         size         : [450,500]
       , data         : undefined
-      , lightboxOpts : {}
+      , lightboxOpts : {
+            inTransform  : Transform.translate(300,0,0)
+          , outTransform : Transform.translate(-500,0,0)
+          , inTransition  : {duration : 500, curve : Easing.outBack}
+          , outTransition : {duration : 350, curve : Easing.inQuad}
+        }
     }
 
     module.exports = SlideshowView
