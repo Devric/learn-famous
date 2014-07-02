@@ -15,27 +15,34 @@ define(function(require, exports, module) {
     var HeaderFooterLayout = require('famous/views/HeaderFooterLayout')
     var GridLayout = require('famous/views/GridLayout')
     var Transitionable   = require('famous/transitions/Transitionable')
-    Transitionable.registerMethod('spring', SpringTransition)
     var MouseSync = require('famous/inputs/MouseSync')
 
-    var position = [0,0]
-
+    var position = new Transitionable([0,0])
     var sync = new MouseSync()
 
     var surface = new Surface({
         size : [200,200]
       , properties : {background:'red'}
     })
-    
+
     surface.pipe(sync)
+
     sync.on('update', function(data) {
-        position[0] += data.delta[0]
-        position[1] += data.delta[1]
+        var currentPos = position.get()
+        position.set([
+            currentPos[0] + data.delta[0]
+          , currentPos[1] + data.delta[1]
+        ])
+    })
+
+    sync.on('end', function() {
+        position.set([0,0], {curve : 'easeOutBounce', duration : 300});
     })
 
     var positionMod = new Modifier({
         transform:  function() {
-            return Transform.translate(position[0], position[1], 0)
+            var currentPos = position.get()
+            return Transform.translate(currentPos[0], currentPos[1], 0)
         }
     })
 
