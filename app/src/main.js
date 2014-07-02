@@ -19,11 +19,24 @@ define(function(require, exports, module) {
     var SnapTransition = require('famous/transitions/SnapTransition')
     Transitionable.registerMethod('spring', SnapTransition)
 
-    var MouseSync = require('famous/inputs/MouseSync')
+    var MouseSync   = require('famous/inputs/MouseSync')
+    var TouchSync   = require('famous/inputs/TouchSync')
+    var ScrollSync  = require('famous/inputs/ScrollSync')
+    var GenericSync = require('famous/inputs/GenericSync')
     
+    GenericSync.register({
+        "mouse"  : MouseSync
+      , "touch"  : TouchSync
+      , "scroll" : ScrollSync
+    })
+
+    var sync = new GenericSync({
+        "mouse" : {},
+        "touch" : {},
+        "scroll": {scale:0.5}
+    })
 
     var position = new Transitionable([0,0])
-    var sync = new MouseSync()
 
     var surface = new Surface({
         size : [200,200]
