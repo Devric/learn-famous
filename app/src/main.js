@@ -14,8 +14,13 @@ define(function(require, exports, module) {
     var EventHandler     = require('famous/core/EventHandler')
     var HeaderFooterLayout = require('famous/views/HeaderFooterLayout')
     var GridLayout = require('famous/views/GridLayout')
-    var Transitionable   = require('famous/transitions/Transitionable')
+
+    var Transitionable = require('famous/transitions/Transitionable')
+    var SnapTransition = require('famous/transitions/SnapTransition')
+    Transitionable.registerMethod('spring', SnapTransition)
+
     var MouseSync = require('famous/inputs/MouseSync')
+    
 
     var position = new Transitionable([0,0])
     var sync = new MouseSync()
@@ -35,8 +40,13 @@ define(function(require, exports, module) {
         ])
     })
 
-    sync.on('end', function() {
-        position.set([0,0], {curve : 'easeOutBounce', duration : 300});
+    sync.on('end', function(data) {
+        var velocity = data.velocity
+        position.set([0,0], {
+            curve : 'easeOutBounce',
+            duration : 300,
+            velocity: velocity
+        });
     })
 
     var positionMod = new Modifier({
