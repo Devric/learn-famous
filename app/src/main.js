@@ -27,55 +27,100 @@ define(function(require, exports, module) {
     GenericSync.register({
         "mouse"  : MouseSync
       , "touch"  : TouchSync
-      , "scroll" : ScrollSync
     })
 
-    var sync = new GenericSync({
-        "mouse" : {},
-        "touch" : {},
-        "scroll": {scale:0.5}
+    var sync = new GenericSync(['mouse','touch'], {
+        direction: GenericSync.DIRECTION_X
     })
 
-    var position = new Transitionable([0,0])
+    var DISPLACEMENT_LIMIT     = 100
+    var DISPLACEMENT_PEEK      = 50
+    var DISPLACEMENT_THRESHOLD = 200
+    var VELOCITY_THRESHOLD     = 0.2
+    var SURFACE_SIZE           = [200,200]
 
-    var surface = new Surface({
-        size : [200,200]
-      , properties : {background:'red'}
+    var position = new Transitionable(0)
+
+    var background = new Surface({
+        size: SURFACE_SIZE,
+        properties : {background:'black'}
     })
 
-    surface.pipe(sync)
+    var draggableSurface = new Surface({
+        size: SURFACE_SIZE,
+        properties : {background:'red'}
+    })
+
+    var textSurface = new Surface({
+        size : SURFACE_SIZE,
+        content : '➵',
+        properties: {
+            fontSize : '100px',
+            lineHeight: SURFACE_SIZE[1] + 'px',
+            textAlign : 'center',
+            pointerEvents : 'none',
+            textShadow: '0 0 2px white'
+        }
+    })
+
+    draggableSurface.pipe(sync)
 
     sync.on('update', function(data) {
-        var currentPos = position.get()
-        position.set([
-            currentPos[0] + data.delta[0]
-          , currentPos[1] + data.delta[1]
-        ])
+        var curPos = position.get()
+        var delta = data.delta
+
+        if (curPos + delta < DISPLACEMENT_LIMIT) {
+            position.set(curPos+delta)
+        } else {
+            position.get(DISPLACEMENT_LIMIT)
+        }
+
+        if (curPos + delta < -DISPLACEMENT_PEEK)
+            position.set(-DISPLACEMENT_PEEK)
     })
 
     sync.on('end', function(data) {
+        var curPos = position.get()
         var velocity = data.velocity
-        position.set([0,0], {
-            curve : 'easeOutBounce',
-            duration : 300,
-            velocity: velocity
-        });
+
+        if (curPos>DISPLACEMENT_THRESHOLD || velocity > VELOCITY_THRESHOLD) {
+            position.set(DISPLACEMENT_LIMIT, {
+                method   : 'snap',
+                period   : 200,
+                velocity : velocity
+            })
+        } else {
+            position.set(0, {
+                method   : 'snap',
+                period   : 200,
+                velocity : velocity
+            })
+        }
     })
 
     var positionMod = new Modifier({
         transform:  function() {
-            var currentPos = position.get()
-            return Transform.translate(currentPos[0], currentPos[1], 0)
+            return Transform.translate(position.get(),0,0)
         }
     })
 
-    var centerMod = new Modifier({origin:[0.5,0.5]})
+    var rotationMod = new Modifier({
+        transform : function() {
+            var angle = Math.PI * (position.get() / DISPLACEMENT_LIMIT)
+            return Transform.rotateZ(angle)
+        }
+    })
+
+    var centerMod = new Modifier({origin: [0.5,0.5]})
+
 
     var mainContext = Engine.createContext()
+    var centerNode = mainContext.add(centerMod)
+    centerNode.add(background)
 
-    mainContext.add(centerMod)
-               .add(positionMod)
-               .add(surface)
+    var movableNod = centerNode.add(positionMod)
+    movableNod.add(draggableSurface)
+    movableNod.add(rotationMod).add(textSurface)
 
 });
 
